@@ -20,13 +20,13 @@
                 <Layout class="main-content">
                     <Content class="main-content-wrapper" :style="{padding: '5px', minHeight: '280px', background: '#fff'}">
                         <!-- 在tab-panel中嵌入命名路由视图, 通过v-if来挂载/卸载 -->
-                        <Tabs ref="tab" type="card" size="small" closable @on-tab-remove="closeTab" @on-click="clickTab" :animated="false" :value="currentMenu">
+                        <Tabs ref="tab" :capture-focus="false" type="card" size="small" closable @on-tab-remove="removeTab" @on-click="clickTab" :animated="false" :value="currentMenu">
                             <TabPane :label="tab.label" v-for="tab in tabs" :name="tab.name" v-if="tab.mount" :key="tab.name" :icon="tab.icon">
                               <keep-alive>
                                 <router-view :name="tab.name"></router-view>
                               </keep-alive>
                             </TabPane>
-                            <Button @click="closeTab" size="small" slot="extra">关闭</Button>
+                            <Button @click="removeTab" size="small" slot="extra">关闭</Button>
                         </Tabs>
                     </Content>
 
@@ -50,7 +50,6 @@ import store from "../store"
 export default {
   data() {
     return {
-      currentMenu: null
     }
   },
 
@@ -67,21 +66,20 @@ export default {
       currentUser: state => state.auth.currentUser,
       sysMenuList: state => state.sysManage.sysMenuList,
       tabs: state => state.common.tabs,
+      currentMenu: state => state.common.currentMenu
     })
   },
 
   methods: {
     selectMenu(name) {
-      this.currentMenu = name
       this.$store.dispatch("common/openTab", name)
     },
 
     clickTab(name) {
-      this.currentMenu = name
       this.$store.dispatch("common/openTab", name)
     },
 
-    closeTab(name) {
+    removeTab(name) {
       this.$store.dispatch("common/closeTab", name)
     }
   }

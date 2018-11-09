@@ -22,7 +22,7 @@
     "ejs": "^2.5.9",
     "fullcalendar": "^3.9.0",
     "fullcalendar-scheduler": "^1.9.4",
-    "iview": "^2.14.0",
+    "iview": "^3.1.5",
     "jquery-cropper": "^1.0.0",
     "moment": "^2.22.1",
     "sortablejs": "^1.7.0",

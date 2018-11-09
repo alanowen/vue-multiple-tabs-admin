@@ -5,7 +5,9 @@ export default {
     namespaced: true,
 
     state: {
-        tabs: []
+        tabs: [],
+
+        currentMenu: null
     },
 
     mutations: {
@@ -16,8 +18,8 @@ export default {
 
         // 打开tab
         openTab({ state, commit, rootState }, name) {
-            let tab = undefined
-            let index = state.tabs.findIndex(i => i.name == name)
+            let tab = undefined, index = state.tabs.findIndex(i => i.name == name);
+
             if (index == -1) {
 
                 let menu = null
@@ -48,7 +50,8 @@ export default {
                     state.tabs.push(tab)
                 }
             }
-            setTimeout(() => router.replace({ name }))
+            state.currentMenu = name
+            router.replace({ name })
         },
 
         // 关闭tab
@@ -57,23 +60,26 @@ export default {
             let index = mounted.findIndex(i => i.name == name)
             mounted[index].mount = false
 
-            if (index == 0) {
-                let t = state.tabs[index + 1]
-                if (t == undefined) {
-                    setTimeout(() => router.replace({ name: 'Index' }))                    
+            let nextRoute = 'Index', nextMenu = null;
+
+            if (name == state.currentMenu) {
+                if (index == 0) {
+                    let t = mounted[index + 1]
+                    if (t != undefined) {
+                        alert(t.name)
+                        nextRoute = nextMenu = t.name
+                    }
+                } else if (index == mounted.length - 1) {
+                    let t = mounted[index - 1]
+                    if (t != undefined) {
+                        nextRoute = nextMenu = t.name
+                    }
                 } else {
-                    setTimeout(() => router.replace({ name: t.name }))                    
+                    let t = mounted[index + 1]
+                    nextRoute = nextMenu = t.name
                 }
-            } else if (index == mounted.length - 1) {
-                let t = state.tabs[index - 1]
-                if (t == undefined) {
-                    setTimeout(() => router.replace({ name: 'Index' }))                    
-                } else {
-                    setTimeout(() => router.replace({ name: t.name }))
-                }
-            } else {
-                let t = state.tabs[index + 1]
-                setTimeout(() => router.replace({ name: t.name }))
+                state.currentMenu = nextMenu
+                router.replace({ name: nextRoute })
             }
         }
     },
